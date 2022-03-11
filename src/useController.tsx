@@ -116,19 +116,23 @@ const useController = ({
   /**
    * Form submit handler.
    */
-  const onSubmit = useCallback(
-    (...rest) => {
-      // When the submit method if called, we touch all fields to make them validatable.
-      const touched = getAllFieldsTouched(schema)
-      const [isValid] = validate(schema, values, touched)
+  const onSubmit = useMemo(
+    () =>
+      // Bypass by default when in a nested form.
+      isNestedFormValues
+        ? baseOnSubmit
+        : (...rest: any) => {
+            // When the submit method if called, we touch all fields to make them validatable.
+            const touched = getAllFieldsTouched(schema)
+            const [isValid] = validate(schema, values, touched)
 
-      if (isValid) {
-        baseOnSubmit(values, ...rest)
-      }
+            if (isValid) {
+              baseOnSubmit(values, ...rest)
+            }
 
-      setTouched(touched)
-    },
-    [baseOnSubmit, schema, setTouched, values]
+            setTouched(() => touched)
+          },
+    [isNestedFormValues, baseOnSubmit, schema, setTouched, values]
   )
 
   return {

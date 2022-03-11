@@ -1,5 +1,5 @@
 import { useState as useBaseState } from 'react'
-import { getInitialValues, getInitialTouched, getInitialVisited } from '.'
+import { getInitialTouched, getInitialValues, getInitialVisited } from './utils'
 
 /**
  * Builds the state hooks that `useController` will use to store all form related data.
