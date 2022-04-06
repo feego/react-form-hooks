@@ -23,7 +23,7 @@ export const useGetPropsForNestedForm = ({
     ([name, form]) => (reducer: any, nestedFormEvent: any) =>
       onChange(
         buildEventMetadata(values, validationResult, name, form, nestedFormEvent),
-        (values: any) => ({ ...values, [name]: reducer(values[name]) })
+        (values: any = {}) => ({ ...values, [name]: reducer(values[name]) })
       ),
     [values, validationResult, onChange]
   )
@@ -31,7 +31,7 @@ export const useGetPropsForNestedForm = ({
     ([name, form]) => (reducer: any, nestedFormEvent: any) =>
       onFieldTouchedChange(
         buildEventMetadata(values, validationResult, name, form, nestedFormEvent),
-        (touched: any) => ({ ...touched, [name]: reducer(touched[name]) })
+        (touched: any = {}) => ({ ...touched, [name]: reducer(touched[name]) })
       ),
     [onFieldTouchedChange, validationResult, values]
   )
@@ -39,7 +39,7 @@ export const useGetPropsForNestedForm = ({
     ([name, form]) => (reducer: any, nestedFormEvent: any) =>
       onFieldVisitedChange(
         buildEventMetadata(values, validationResult, name, form, nestedFormEvent),
-        (visited: any) => ({ ...visited, [name]: reducer(visited[name]) })
+        (visited: any = {}) => ({ ...visited, [name]: reducer(visited[name]) })
       ),
     [onFieldVisitedChange, validationResult, values]
   )

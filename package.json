@@ -1,7 +1,7 @@
 {
   "name": "react-functional-form",
   "author": "Rui Monteiro",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
