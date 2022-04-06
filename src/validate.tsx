@@ -51,13 +51,11 @@ export const validateField = (field: any, value: any, metadata: any) => {
 /**
  * Validates a fields array.
  *
- * @example Example structute:
- * [{ name: 'firstName', placeholder: 'first-name' }, { ... }]
- *
- * @param {Schema} schema - Form schema.
- * @param {Object} values - Values to validate.
- * @param {Object} touched - Touched fields.
- * @returns {Array} Array with a boolean that flags the validation result and the errors object as the second element.
+ * To think about: we could add an additional argument that would carry the root form values and feed them to
+ * all the nested forms' validations. Didn't add it yet, because that would make the nested forms less modular,
+ * as they'd then have to be aware of implementation details of the outer form. The current solution for this
+ * use case now would be to map the form schema fields adding them the additional context specific validations
+ * on each context.
  */
 export default function validate(schema: any, values: any = {}, touched: any = {}) {
   return getFields(schema).reduce(
@@ -65,7 +63,6 @@ export default function validate(schema: any, values: any = {}, touched: any = {
       const wasFieldTouched = Boolean(touched[fieldName])
 
       // We only validate touched fields.
-      // eslint-disable-next-line no-nested-ternary
       const validationResult = isForm(field)
         ? validate(field, values[fieldName], touched[fieldName])
         : wasFieldTouched

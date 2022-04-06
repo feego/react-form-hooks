@@ -7,7 +7,7 @@ import {
   getInitialVisited,
   stateFromSchema
 } from './utils'
-import validate from './validate'
+import defaultValidate from './validate'
 
 /**
  * The `useController` hook allows the parent component to control all its state and, in that case, be
@@ -24,7 +24,6 @@ const useController = ({
   validateOnInit = false,
   additionalErrors,
   // All form state goes in these 3 hooks:
-  /* eslint-disable react-hooks/rules-of-hooks */
   valuesStateHook: [values = stateFromSchema(schema), baseSetValues, isNestedFormValues] = useState(
     getInitialValues(schema, initialValues)
   ),
@@ -38,8 +37,8 @@ const useController = ({
     baseSetVisited,
     isNestedFormVisited
   ] = useState(getInitialVisited(schema)),
-  /* eslint-enable react-hooks/rules-of-hooks */
-  validationResult = getValidationResult(schema, values, touched, additionalErrors),
+  validate = defaultValidate,
+  validationResult = getValidationResult(schema, values, touched, additionalErrors, validate),
   onFieldTouch: baseOnFieldTouch = () => {},
   onFieldVisit: baseOnFieldVisit = () => {},
   onChange: baseOnChange = () => {},
@@ -132,7 +131,7 @@ const useController = ({
 
             setTouched(() => touched)
           },
-    [isNestedFormValues, baseOnSubmit, schema, setTouched, values]
+    [isNestedFormValues, baseOnSubmit, schema, setTouched, values, validate]
   )
 
   return {

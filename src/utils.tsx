@@ -1,5 +1,7 @@
-import validate from './validate'
+import defaultValidate from './validate'
 import { getFields, isForm } from './schemaUtils'
+
+export type ValidationResult = [true] | [false, any]
 
 export const stateFromSchema = (schema: any, state: any = {}) =>
   getFields(schema).reduce((result: any, [name, field]: any) => {
@@ -28,14 +30,38 @@ export const getInitialVisited = (schema: any) => populateRecursively(schema, fa
 
 export const getAllFieldsTouched = (schema: any) => populateRecursively(schema, true)
 
+export const mergeAdditionalErrors = (
+  validationResult: ValidationResult = [true],
+  additionalErrors: any = {}
+): ValidationResult => {
+  return Object.keys(additionalErrors).reduce(([isValid, errors]: ValidationResult, errorKey) => {
+    const error = additionalErrors[errorKey]
+    const additionalValidationResult =
+      typeof error === 'object'
+        ? mergeAdditionalErrors(errors?.[errorKey], additionalErrors[errorKey])
+        : error
+        ? [false, error]
+        : [true]
+
+    return [
+      isValid && additionalValidationResult[0],
+      {
+        ...errors,
+        [errorKey]: additionalValidationResult
+      }
+    ] as ValidationResult
+  }, validationResult)
+}
+
 export const getValidationResult = (
   schema: any,
   values: any,
   touched: any,
-  additionalErrors: any
+  additionalErrors: any,
+  validate = defaultValidate
 ) => {
-  const [isValid, errors] = validate(schema, values, touched)
-  const allErrors = additionalErrors !== undefined ? { ...errors, ...additionalErrors } : errors
-
-  return [isValid, allErrors]
+  const validationResult = validate(schema, values, touched)
+  return additionalErrors !== undefined
+    ? mergeAdditionalErrors(validationResult, additionalErrors)
+    : validationResult
 }
