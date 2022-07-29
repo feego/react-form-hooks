@@ -123,13 +123,15 @@ const useController = ({
         : (...rest: any) => {
             // When the submit method if called, we touch all fields to make them validatable.
             const touched = getAllFieldsTouched(schema)
-            const [isValid] = validate(schema, values, touched)
+            const validationResult = validate(schema, values, touched)
 
-            if (isValid) {
+            if (validationResult[0]) {
               baseOnSubmit(values, ...rest)
             }
 
             setTouched(() => touched)
+
+            return validationResult
           },
     [isNestedFormValues, baseOnSubmit, schema, setTouched, values, validate]
   )
